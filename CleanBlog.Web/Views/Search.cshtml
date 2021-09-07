@@ -1,0 +1,24 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+}
+@Html.Partial("~/Views/Partials/PageHeader.cshtml");
+<div class="container">
+    <form action="/search/" method="GET" id="search">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="form-group controls">
+                    <input type="text" value="" class="form-control col-xs-6" />
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="form-group">
+                    <button class="btn btn-primary search-button">Search</button>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <p>There are no serach results..</p>
+            </div>
+        </div>
+    </form>
+</div>

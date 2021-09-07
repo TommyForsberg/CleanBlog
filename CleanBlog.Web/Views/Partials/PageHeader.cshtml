@@ -1,0 +1,53 @@
+﻿@inherits UmbracoViewPage
+
+@{
+    var title = Model.HasValue(alias: "title") ? Model.Value(alias: "title") : Model.Name;
+    var subTitle = Model.HasValue(alias: "subtitle") ? Model.Value<string>(alias: "subtitle") : "";
+    var image = Model.Value<IPublishedContent>(alias: "mainImage", fallback: Fallback.ToAncestors);
+
+    string imageUrl = string.Empty;
+    if (image != null)
+    {
+        imageUrl = image.GetCropUrl(width: 1903, height: 532);
+    }
+
+    var authorName = Model.HasProperty(alias: "authorName") && Model.HasValue(alias: "authorName") ? Model.Value<string>(alias: "authorName") : "";
+    DateTime articleDate = Model.HasProperty(alias: "articleDate") && Model.HasValue(alias: "articleDate") ? Model.Value<DateTime>(alias: "articleDate") : DateTime.MinValue;
+
+    bool hasAuthorDetails = !string.IsNullOrWhiteSpace(authorName) || articleDate != DateTime.MinValue;
+}
+
+
+<header class="masthead" style="@(!string.IsNullOrWhiteSpace(imageUrl) ? "background-image: url('" + imageUrl + "')" : null)">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="page-heading">
+                    <h1>@title</h1>
+                    @if (!string.IsNullOrWhiteSpace(subTitle))
+                    {
+
+
+                        if (hasAuthorDetails)
+                        {
+
+                            <h3 class="subheading">@subTitle</h3>
+                        }
+                        else
+                        {
+
+                            <span class="subheading">@subTitle</span>
+                        }
+                    }
+                    @if (hasAuthorDetails)
+                    {
+                        <span class="meta">
+                            Posted by @authorName on @articleDate.ToString(format: "MMMM dd, yyyy")
+                        </span>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
