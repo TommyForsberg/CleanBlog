@@ -14,5 +14,7 @@ namespace Clean.Core.ViewModels
         [Required]
         [MaxLength(500, ErrorMessage = "Your message must be 500 characters or less")]
         public string Message { get; set; }
+
+        public int ContactFormId { get; set; }
     }
 }

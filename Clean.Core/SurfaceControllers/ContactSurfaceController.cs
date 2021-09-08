@@ -8,11 +8,18 @@ using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.PublishedModels;
+using Clean.Core.Services;
 
 namespace Clean.Core.SurfaceControllers
 {
     public class ContactController : SurfaceController
     {
+        private readonly ISmtpService smtpService;
+
+        public ContactController(ISmtpService smtpService)
+        {
+            this.smtpService = smtpService;
+        }
         [HttpGet]
         public ActionResult RenderForm()
         {
@@ -32,7 +39,7 @@ namespace Clean.Core.SurfaceControllers
             bool success = false;
             if (ModelState.IsValid)
             {
-                success = SendEmail(model);
+                success = smtpService.SendEmail(model);
             }
 
             var contactPage = Umbraco.ContentAtXPath("//contact").FirstOrDefault();
@@ -43,28 +50,6 @@ namespace Clean.Core.SurfaceControllers
             return PartialView("/Views/Partials/Contact/result.cshtml", success ? successMessage : errorMessage);
         }
 
-        public bool SendEmail(ContactViewModel model)
-        {
-            try
-            {
-                MailMessage message = new MailMessage();
-                SmtpClient client = new SmtpClient();
 
-                string toAddress = System.Web.Configuration.WebConfigurationManager.AppSettings["ContactEmailTo"];
-                string fromAddress = System.Web.Configuration.WebConfigurationManager.AppSettings["ContactEmailFrom"];
-                message.Subject = string.Format("Enquiry from: {0} - {1}", model.Name, model.Email);
-                message.Body = model.Message;
-                message.To.Add(new MailAddress(toAddress, toAddress));
-                message.From = new MailAddress(fromAddress, fromAddress);
-
-                client.Send(message);
-                return true;
-            }
-            catch (System.Exception ex)
-            {
-                Logger.Error(MethodBase.GetCurrentMethod().DeclaringType, "Contact Form Error", ex);
-                return false;
-            }
-        }
     }
 }

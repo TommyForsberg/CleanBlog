@@ -1,5 +1,6 @@
 ﻿@inherits UmbracoViewPage
 @using Clean.Core.Helpers
+
 @{
     var articles = Model.Root().Descendants<Article>().Where(x => x.IsVisible()).OrderByDescending(y => y.ArticleDate);
     var articleList = Model.Root().Descendants<ArticleList>().FirstOrDefault();
